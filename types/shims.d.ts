@@ -1,0 +1,5 @@
+declare module '@anthropic-ai/bedrock-sdk'
+declare module '@anthropic-ai/foundry-sdk'
+declare module '@anthropic-ai/vertex-sdk'
+declare module 'google-auth-library'
+declare module '@azure/identity'

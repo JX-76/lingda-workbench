@@ -1,0 +1,1 @@
+export const CACHED_MICROCOMPACT_CONFIG = {};

@@ -1,0 +1,12 @@
+{
+  "extends": "./webui/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "files": [
+    "webui/src/api/client.ts",
+    "webui/src/components/McpPanel.tsx",
+    "webui/src/types/chat.ts"
+  ]
+}

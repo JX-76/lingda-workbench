@@ -1,0 +1,8 @@
+{
+  "name": "execa",
+  "version": "9.6.1-stub",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  }
+}

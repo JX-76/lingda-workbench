@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #fcfcfc;
+    color: #171717; /* Very dark gray, softer than pure black */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+  }
+}
+
+/* Invisible scrollbars, Mac-like feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Elegant Prose for Markdown */
+.prose {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #262626;
+}
+.prose pre {
+  background-color: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.75rem;
+  margin: 0.75rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+.prose code {
+  background-color: #f5f5f5;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.85em;
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color: #3b82f6;
+  border: 1px solid #e5e5e5;
+}
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: #404040;
+  border: none;
+}
+.prose p {
+  margin: 0.5rem 0;
+}
+.prose strong {
+  font-weight: 600;
+  color: #171717;
+}
+.prose a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+.prose a:hover {
+  text-decoration: underline;
+}
