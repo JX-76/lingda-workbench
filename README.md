@@ -58,6 +58,56 @@ The current implementation is organized around these layers:
 - Expose core agent capabilities through a browser UI
 - Keep the architecture layered and non-invasive
 
+## Highlights at a glance
+
+- **From terminal-only to browser workbench**: the runtime can now be operated through a structured UI instead of only through CLI flows.
+- **Approval-gated execution**: high-impact actions do not silently run; they suspend, surface intent, and resume only after approval.
+- **Recoverable sessions**: page refresh and reconnect scenarios are handled through session snapshots instead of resetting the workflow.
+- **Provider abstraction**: Anthropic-native and OpenAI-compatible providers are normalized behind a shared execution path.
+- **Lightweight memory pipeline**: context is no longer assembled by naive history dumping; it is selected, budgeted, diagnosed, and conservatively written back.
+
+## Validation and evidence
+
+This project is not presented as a pure UI shell or a speculative rewrite. The current implementation was shaped through staged validation:
+
+### End-to-end runtime validation
+The core web execution path has already been validated across the following checkpoints:
+
+- **T1** — text streaming path works end-to-end
+- **T2** — tool approval, suspend, manual approve, and resume work correctly
+- **T3** — session snapshot and hydration path remain readable after suspension
+- **T4** — concurrent sessions remain isolated and approval IDs do not cross-contaminate
+- **T5** — invalid approval requests return explicit errors without crashing the backend
+
+### Cross-provider context benchmark
+A small cross-provider benchmark was also used to compare context strategies under different providers.
+
+From the current benchmark summary (`outputs/context-benchmark/report_cross_provider_small_v2.md`):
+
+- On **DeepSeek**, strategies **C2** and **C3** reached the strongest balance of stability and context retention.
+- On **Ollama**, the same strategies improved context hit rate, but with a larger latency trade-off.
+- The takeaway is that context policy must be treated as an explicit engineering choice, not a hidden prompt concatenation side effect.
+
+A longer engineering write-up is available in:
+- [`docs/design-and-benchmarks.md`](docs/design-and-benchmarks.md)
+- [`docs/zh/06-web-backend-architecture-v2.md`](docs/zh/06-web-backend-architecture-v2.md)
+
+## Design principles
+
+This project follows a few deliberate architectural rules:
+
+1. **Non-invasive adaptation over core rewrite**  
+   The original agent core is treated as the strongest part of the system. New capability is added through wrappers, adapters, session orchestration, and compatibility layers instead of rewriting the heart of the runtime.
+
+2. **Make powerful behavior visible**  
+   Tool execution, approval, suspension, recovery, and diagnostics are surfaced as observable product behavior rather than hidden runtime side effects.
+
+3. **Prefer explicit degradation over silent failure**  
+   Whether dealing with provider compatibility, unsupported multimodal blocks, or memory write-back, the system is designed to degrade in a visible, explainable way.
+
+4. **Separate memory storage from context assembly**  
+   Memory files are not equivalent to prompt context. Storage, selection, budgeting, diagnostics, and write-back are treated as separate responsibilities.
+
 ## Key capabilities currently included
 
 ### Agent interaction
