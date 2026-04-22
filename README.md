@@ -108,6 +108,56 @@ This project follows a few deliberate architectural rules:
 4. **Separate memory storage from context assembly**  
    Memory files are not equivalent to prompt context. Storage, selection, budgeting, diagnostics, and write-back are treated as separate responsibilities.
 
+## Architecture at a glance
+
+```mermaid
+flowchart TD
+    U[User] --> UI[Browser Workbench UI]
+    UI --> API[API Client + Stream Manager]
+    API --> ROUTES[Web Server Routes]
+
+    ROUTES --> SESSION[WebChatSession / SessionManager]
+    SESSION --> CONTEXT[ContextBuilder]
+    CONTEXT --> MEMORY[MemoryStore]
+
+    SESSION --> ENGINE[QueryEngine]
+    ENGINE --> PERM[Permission / Approval Layer]
+    ENGINE --> ADAPTER[Provider Adapter Layer]
+    ADAPTER --> MODEL[Anthropic / OpenAI-compatible / DeepSeek / Ollama / ...]
+
+    ENGINE --> TOOLS[Tool Execution Layer]
+    TOOLS --> FS[Filesystem / Shell / MCP / Other Tools]
+    TOOLS --> PERM
+
+    SESSION --> WRITEBACK[MemoryWriteback / MemoryPromotion]
+    WRITEBACK --> MEMORY
+    SESSION --> API
+    API --> UI
+```
+
+## Why this is different
+
+### Compared with a typical web chat wrapper
+- not just text-in / text-out
+- supports tool execution with explicit approval
+- preserves session state across interruption and restore
+- treats context construction as an explicit engineering concern
+
+### Compared with Cline-style tooling
+- shares the same ambition of making agent tooling visible and operable
+- pushes further on web-first session recovery, layered provider adaptation, and memory/context experimentation
+- treats runtime adaptation itself as a first-class engineering problem rather than only a UI problem
+
+## Repository guide
+
+If you are reading this repo for the first time, start here:
+
+- `src/server/` — web runtime, sessions, routes, and local server layer
+- `src/providers/` — provider registry, adapter factory, and compatibility adapters
+- `src/memory/` — memory store, context builder, write-back, and promotion logic
+- `webui/src/` — browser workbench UI, stores, API client, and stream manager
+- `docs/design-and-benchmarks.md` — design rationale, staged validation, and benchmark summary
+
 ## Key capabilities currently included
 
 ### Agent interaction
@@ -271,3 +321,14 @@ This repository is most useful for:
 ## Notes
 
 This `github-release/` directory is a cleaned packaging target prepared from a larger working directory. Temporary logs, local state, and obvious machine-specific artifacts have been excluded to make review and publication easier.
+
+## Roadmap snapshot
+
+Near-term areas still worth improving:
+- deeper MCP lifecycle management and richer tool introspection
+- broader provider productization beyond the current first-class set
+- richer frontend surfacing for memory/context diagnostics
+- more mature long-term memory promotion strategies
+
+If you want the design rationale behind these directions, continue to:
+- [`docs/design-and-benchmarks.md`](docs/design-and-benchmarks.md)

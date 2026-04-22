@@ -27,7 +27,72 @@ Several design constraints shaped the implementation:
 4. **Context must be engineered, not improvised**  
    Memory and context selection should be deliberate, budgeted, and inspectable.
 
-## 3. Major architectural decisions
+## 3. System architecture overview
+
+```mermaid
+flowchart TD
+    U[User] --> UI[Web UI Workbench]
+    UI --> API[API Client / StreamManager]
+    API --> ROUTES[Express-style Web Routes]
+
+    ROUTES --> SESSION[WebChatSession / SessionManager]
+    SESSION --> CTX[ContextBuilder]
+    CTX --> MEM[MemoryStore]
+
+    SESSION --> ENGINE[QueryEngine]
+    ENGINE --> PERM[Permission & Approval Control]
+    ENGINE --> ADAPTER[Provider Adapter Layer]
+    ADAPTER --> LLM[Anthropic / DeepSeek / OpenAI-Compatible / Ollama ...]
+
+    ENGINE --> TOOLS[Tool Layer]
+    TOOLS --> RUNTIME[Filesystem / Shell / MCP / Other External Tools]
+
+    SESSION --> WRITEBACK[MemoryWriteback / MemoryPromotion]
+    WRITEBACK --> MEM
+```
+
+## 4. End-to-end interaction flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as Web UI
+    participant Session as WebChatSession
+    participant Context as ContextBuilder
+    participant Engine as QueryEngine
+    participant Adapter as Provider Adapter
+    participant Tool as Tool Layer
+    participant Memory as Memory Components
+
+    User->>UI: Submit request
+    UI->>Session: submitMessage()
+    Session->>Context: buildContext(recentMessages, memorySnapshot)
+    Context->>Memory: read memory buckets
+    Context-->>Session: systemContext + diagnostics
+    Session->>Engine: execute turn with context
+    Engine->>Adapter: call model
+    Adapter-->>Engine: stream response
+
+    alt text only
+      Engine-->>Session: assistant delta
+      Session-->>UI: SSE updates
+    else tool call needed
+      Engine->>Tool: request tool execution
+      Tool->>Session: canUseTool?
+      Session-->>UI: approval_required
+      User->>UI: approve / deny
+      UI->>Session: approval response
+      Session-->>Tool: resolve permission
+      Tool-->>Engine: tool_result
+      Engine-->>Session: continue generation
+      Session-->>UI: SSE updates
+    end
+
+    Session->>Memory: writeBackMemory()
+    Memory-->>Session: diagnostics / promotion candidates
+```
+
+## 5. Major architectural decisions
 
 ### 3.1 Session orchestration instead of request-only chat
 A browser UI needs recoverable session state. Instead of treating each request as a stateless chat call, the project introduces a session layer to support:
@@ -56,7 +121,7 @@ The project separates these concerns into:
 
 This separation makes the system easier to debug and much safer to evolve.
 
-## 4. Validation summary
+## 6. Validation summary
 
 ## 4.1 End-to-end regression checks
 A staged regression process was used to validate the web adaptation:
@@ -97,7 +162,7 @@ The architectural implication is straightforward:
 
 That is why the project added diagnostics to the memory/context pipeline rather than hiding prompt assembly inside session code.
 
-## 5. Memory write-back philosophy
+## 7. Memory write-back philosophy
 
 The current write-back path is intentionally conservative.
 
@@ -117,7 +182,7 @@ The project treats memory pollution as a more dangerous failure mode than under-
 
 > it is better to remember too little than to remember the wrong thing everywhere.
 
-## 6. Current limitations
+## 8. Current limitations
 
 This is still an engineering prototype, not a finished product.
 
@@ -129,7 +194,7 @@ Key limitations include:
 - full root-level build remains less reliable than the recommended local dev path
 - memory promotion is currently candidate-only, not fully operationalized
 
-## 7. Why this project is worth studying
+## 9. Why this project is worth studying
 
 This repository is useful not because it is a perfect end product, but because it demonstrates a realistic engineering approach to a hard problem:
 
