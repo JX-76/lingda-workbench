@@ -92,27 +92,96 @@ The project includes a lightweight memory pipeline:
 
 This is intentionally lightweight and explainable rather than vector-database based.
 
-## Running locally
+## Prerequisites
 
-### Backend
+Before running locally, prepare the following:
+
+- **Node.js**: 18+ recommended
+- **npm**: standard npm workflow is supported in this repository
+- **Operating system**: macOS / Linux recommended for the current local workflow
+- **Optional**: Ollama, if you want to test local models
+
+## Quick start
+
+### 1. Install dependencies
+At the repository root:
+
 ```bash
 npm install
+```
+
+Then install frontend dependencies:
+
+```bash
+cd webui
+npm install
+cd ..
+```
+
+### 2. Start the backend
+```bash
 npm run dev:server
 ```
 
-Default backend port:
+Default backend URL:
 ```text
 http://127.0.0.1:3456
 ```
 
-### Frontend
+### 3. Start the frontend
+In a second terminal:
+
 ```bash
 cd webui
-npm install
 npm run dev
 ```
 
-Then open the Vite URL shown in the terminal.
+Vite usually starts at:
+```text
+http://127.0.0.1:5173
+```
+
+### 4. Open the workbench
+Open the frontend URL in your browser, then go to the Settings panel and configure a model provider before starting a session.
+
+## Configuration
+
+### Model providers
+The current UI supports configuring:
+- Anthropic
+- OpenAI-compatible endpoints
+- DeepSeek
+- Ollama
+- Kimi
+- MiniMax
+- Custom compatible endpoints
+
+### What needs to be configured
+At minimum, configure:
+- provider
+- model
+- API key (if required)
+- base URL (only if you use a custom/compatible endpoint)
+
+Settings are written locally and then consumed by the backend runtime.
+
+### MCP and tools
+This project also includes MCP-related UI and backend routes. Depending on the provider and local environment, tool availability may differ.
+
+## Running notes
+
+### Backend runtime
+The backend is started through:
+```bash
+npm run dev:server
+```
+This runs the local web server entrypoint and exposes session, chat, MCP, settings, and memory-related APIs.
+
+### Frontend runtime
+The frontend is a Vite-based React app under `webui/`.
+
+### Optional local-model setup
+If you want to use Ollama locally, make sure Ollama is already running before you select it from the UI.
 
 ## Current status
 
@@ -124,12 +193,23 @@ What is stable:
 - provider adapter routing
 - frontend workspace shell
 - memory/context read pipeline
+- lightweight memory write-back to daily summary
 
 What is still evolving:
 - broader provider productization
 - richer MCP lifecycle management
 - deeper diagnostics surfacing in UI
 - further UX simplification for non-technical users
+- stricter long-term memory promotion strategies
+
+## Known limitations
+
+- The repository is still partly shaped by an upstream research/runtime codebase, so some areas remain more engineering-heavy than product-polished.
+- The root-level full build path is not the best “first success path” for new users. For local experience, use:
+  - backend: `npm run dev:server`
+  - frontend: `cd webui && npm run dev`
+- Some provider families are exposed through adapter-based compatibility rather than fully provider-native implementations.
+- MCP capability depth is improving, but not every workflow is yet as polished as mature desktop-first tools.
 
 ## Intended audience
 
