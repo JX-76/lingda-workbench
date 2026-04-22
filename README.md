@@ -1,30 +1,37 @@
-# Claude Code Web Workbench
+# 灵搭 · Lingda Workbench
 
-A web-first adaptation of the Claude Code runtime, turning a terminal-centric coding agent into a browser-based engineering workspace.
+> Turn a powerful terminal-native coding agent into a browser workbench people can actually use.
 
-## What this project is
+**灵搭** is a web-first adaptation of the Claude Code runtime.
+If tools like **Cline** made AI coding agents more visible, Lingda pushes one step further: it tries to make them **operable, reviewable, recoverable, and easier to integrate into real engineering workflows**.
 
-This project takes the core Claude Code agent loop and wraps it with a web delivery layer so users can work through a browser instead of only through CLI flows. The focus is not just chat, but a usable agent workbench with:
+This project is built around a very practical idea:
 
-- streaming chat sessions
-- tool execution with approval gates
-- session persistence and hydration
-- MCP configuration and management
-- multi-provider model access through an adapter layer
-- lightweight memory and context management
-- modular React-based front-end workspace
+- keep the execution power of a Claude Code–style agent runtime
+- lower the usage threshold through a browser UI
+- preserve human control with approval gates
+- expose tools, MCP, memory, and multi-provider access in a more productized way
 
-In practical terms, this is an attempt to productize a powerful agent runtime without rewriting its core execution engine.
+## Why this project matters
 
-## Project goals
+There is a gap between two kinds of AI dev tools:
 
-- Preserve the strengths of the original runtime
-- Reduce operational complexity for end users
-- Make tool use safer through explicit approval flows
-- Expose core agent capabilities through a browser UI
-- Keep the architecture layered and non-invasive
+1. **terminal-first agents** — powerful, but often too opaque or too hard to operate for non-expert users
+2. **chat-style web UIs** — approachable, but too shallow to support real engineering workflows
 
-## Core architecture
+Lingda is an attempt to bridge that gap.
+It is not just “another chat page”. It is a browser workbench designed to keep the strengths of an agent runtime while making it more usable:
+
+- **streaming sessions** instead of one-shot responses
+- **approval-gated tool execution** instead of silent command running
+- **session restore and hydration** instead of losing context on refresh
+- **MCP configuration and management** instead of raw config files only
+- **multi-provider model access** through a unified adapter layer
+- **lightweight memory and context management** instead of full reset every turn
+
+In short, this project is about turning a strong but terminal-centric AI agent into something closer to a real engineering product.
+
+## What is inside
 
 The current implementation is organized around these layers:
 
@@ -42,6 +49,14 @@ The current implementation is organized around these layers:
 
 5. **Memory and context layer**  
    Read-only memory snapshots, context building, diagnostics, and conservative write-back.
+
+## Project goals
+
+- Preserve the strengths of the original runtime
+- Reduce operational complexity for end users
+- Make tool use safer through explicit approval flows
+- Expose core agent capabilities through a browser UI
+- Keep the architecture layered and non-invasive
 
 ## Key capabilities currently included
 
