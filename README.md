@@ -66,6 +66,33 @@ The current implementation is organized around these layers:
 - **Provider abstraction**: Anthropic-native and OpenAI-compatible providers are normalized behind a shared execution path.
 - **Lightweight memory pipeline**: context is no longer assembled by naive history dumping; it is selected, budgeted, diagnosed, and conservatively written back.
 
+## Screenshots
+
+### Main workbench
+
+![Main Workbench](docs/img/workbench-main.png)
+
+The current UI is organized as a browser workbench instead of a single chat window:
+- left: session navigation and workspace entry points
+- center: streaming conversation and approval flow
+- right: project-oriented panels such as file exploration and tool-facing controls
+
+## What you can do in practice
+
+- inspect a codebase through a recoverable browser session instead of a disposable chat thread
+- let the agent propose tool execution, then explicitly approve or reject high-impact actions
+- configure providers and MCP servers without living entirely inside raw config files
+- experiment with context and memory strategies instead of blindly stuffing full history into prompts
+- treat the system as a controllable engineering workbench, not just a model response surface
+
+## Typical workflow
+
+1. start the backend and the frontend locally
+2. configure a model provider in the Settings panel
+3. open a session and ask the agent to inspect or modify part of the project
+4. review approval prompts for tool execution when the action is sensitive
+5. continue the same session with persisted state, recovery, and memory-backed context
+
 ## Validation and evidence
 
 This project is not presented as a pure UI shell or a speculative rewrite. The current implementation was shaped through staged validation:
